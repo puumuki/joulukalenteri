@@ -1,11 +1,11 @@
 import unittest
-from joulukalenteri import jaakalenteri
+import joulukalenteri
 	
 
 class TestJoulukalenteri(unittest.TestCase):
  
     def test_joulukalenteri(self):
-    	jaot = jaakalenteri(['Teemu','Juha','Anna'])
+    	jaot = joulukalenteri.jako(['Teemu','Juha','Anna'])
         self.assertIn( 'Teemu' , jaot.keys() )
         self.assertIn( 'Anna' , jaot.keys() )
         self.assertIn( 'Juha' , jaot.keys() )
