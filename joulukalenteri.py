@@ -1,20 +1,46 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import random,json
 
-def jako(osallistujat=[]):
-  jaot = dict((o,[]) for o in osallistujat)
+def main():
+  osallistujat = ['Teemu','Juha','Anna','Markku','Sari','Alex']
+  PAIVIA_PER_HENKILO = 24 / len(osallistujat)
 
-  paivia_henkilolle = 24 / len(osallistujat)
+  def jako(osallistujat=[]):
+    jaot = dict((o,[]) for o in osallistujat)
+    for paiva in xrange(1,24+1):
+      osallistuja = random.choice(osallistujat)
+      jaot[osallistuja].append(paiva)
+      if len(jaot[osallistuja]) >= PAIVIA_PER_HENKILO:
+        osallistujat.remove(osallistuja)
+    return jaot
 
-  for x in xrange(0,24):
-    osallistuja = random.choice(osallistujat)
-    jaot[osallistuja].append(x+1)
+  def loyda_nostaja(nostot, paiva):
+    henkilo = random.choice(nostot.keys())
+    if paiva in jaot.get(henkilo):
+      return loyda_nostaja(nostot, paiva)
+    else:
+      if len(nostot.get(henkilo)) >= PAIVIA_PER_HENKILO:
+        return loyda_nostaja(nostot, paiva) 
+      return henkilo
 
-    if len(jaot[osallistuja]) >= paivia_henkilolle:
-      osallistujat.remove(osallistuja)
+  def nostot(jaot):
+    osallistujat=jaot.keys()
+    nos = dict((o,[]) for o in osallistujat)
+    for paiva in xrange(1,24+1):
+      nos.get(loyda_nostaja(nos, paiva)).append(paiva)
+    return nos
 
-  return jaot
-
+  jaot=jako(osallistujat)
+  nosset = nostot(jaot)
+  
+  print("Kukin henkilö täyttää pussit näiltä päiviltä:")
+  print(json.dumps(jaot, sort_keys=True, indent=2))
+  print("Kukin henkilö avaa luukun näiltä päiviltä:")
+  print(json.dumps(nosset, sort_keys=True, indent=2))
 
 if __name__ == '__main__':
-  jaot=jako(['Teemu','Juha','Anna','Markku','Sari','Alex'])
-  print(json.dumps(jaot, sort_keys=True, indent=2))
+  try:
+    main()
+  except RuntimeError as re:
+    print("Jako epäonnistui.. rekursio pälli päivien jakaminen epäonnistui")

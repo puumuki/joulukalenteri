@@ -1,7 +1,6 @@
 import unittest
 import joulukalenteri
 	
-
 class TestJoulukalenteri(unittest.TestCase):
  
     def test_joulukalenteri(self):
